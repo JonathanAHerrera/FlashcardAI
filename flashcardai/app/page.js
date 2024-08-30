@@ -1,5 +1,5 @@
 "use client"
-import {Box, Button, IconButton} from '@mui/material';
+import {Box, Button, IconButton, TextField} from '@mui/material';
 import {createTheme, ThemeProvider} from '@mui/material/styles'
 import Menu from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle'
@@ -41,8 +41,8 @@ export default function Home() {
           alignItems={'center'}
           color={'white'}>
             <Box display={'flex'} gap={'20px'}>
-              <Box color='secondary.main'> Logo </Box>
-              <Box color='secondary.main'> AIFlashCards </Box>
+              <Box color='#ffffff'> Logo </Box>
+              <Box color='#ffffff'> AIFlashCards </Box>
             </Box>
             <Box display={'flex'} justifyContent={'center'} alignItems={'center'} gap={'20px'}>
               <Button color='secondary' variant='text' > Menu 1 </Button>
@@ -54,7 +54,12 @@ export default function Home() {
             
           </Box>
         </Box>
-        <Box width={'100px'} height={'100px'} bgcolor={'secondary.main'} fle></Box>
+        <Box width={'100%'} height={'100vh'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'} gap={'40px'}>
+          <Box color={'#ffffff'} fontSize={'50px'}>Please enter your url!</Box>
+          <Box width={'70%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            <TextField fullWidth label="UrlTextField" id="UrlTextField" sx={{ input: { color: '#ffffff' } }} focused/>
+          </Box>
+        </Box>
       </Box>
     </ThemeProvider>
   );
