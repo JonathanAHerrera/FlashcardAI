@@ -56,8 +56,9 @@ export default function Home() {
         </Box>
         <Box width={'100%'} height={'100vh'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'} gap={'40px'}>
           <Box color={'#ffffff'} fontSize={'50px'}>Please enter your url!</Box>
-          <Box width={'70%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+          <Box width={'70%'} display={'flex'} justifyContent={'center'} alignItems={'center'} gap='20px'>
             <TextField fullWidth label="UrlTextField" id="UrlTextField" sx={{ input: { color: '#ffffff' } }} focused/>
+            <Button variant='contained'>Submit</Button>
           </Box>
         </Box>
       </Box>
