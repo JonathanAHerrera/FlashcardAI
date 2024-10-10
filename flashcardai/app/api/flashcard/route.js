@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import OpenApi from 'openapi';
+import OpenAI from 'openai';
 
 
 function parseTranscript(transcript){
-    const parsedJSON = JSON.parse(transcript);
+    const parsedJSON = JSON.parse( transcript );
     
     let concatTranscript = "";
-    for (const jsonArrayIndex in parsedJSON){
-        concatTranscript += parsedJSON[jsonArrayIndex]['text'] + ' ';
+    for ( const jsonArrayIndex in parsedJSON ){
+        concatTranscript += parsedJSON[ jsonArrayIndex ][ 'text' ] + ' ';
     }
     
     return concatTranscript;
@@ -18,19 +18,21 @@ export async function POST(req){
     const jsonReq = await req.json();
     let { transcript } = jsonReq;
     
-    // Generate Transcript
-    transcript = JSON.stringify(transcript);
-    transcript = transcript.replace(/'/g, '"');
-    transcript = transcript.replace(/\\n/g, '');
-    transcript = '[' + transcript.slice(1,-1) + ']'
+    // Generate and clean up Transcript
+    transcript = JSON.stringify( transcript );
+    transcript = transcript.replace( /'/g, '"' );
+    transcript = transcript.replace( /\\n/g, '' );
+    transcript = transcript.replace( /(\w)"(\w)/g, '$1\'$2');
+    transcript = transcript.replace( /\\"/g, '"' )
+    transcript = '[' + transcript.slice( 1, -1 ) + ']';
 
-    const parsedTranscript = parseTranscript(transcript);
+    const parsedTranscript = parseTranscript( transcript );
     
     // Generate Flashcard questions from transcript
     const openAi = new OpenAI();
     
-    const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+    const response = await openAi.chat.completions.create({
+        model: "gpt-4o-mini",
         messages: [
           {
             "role": "system",
@@ -38,8 +40,11 @@ export async function POST(req){
               {
                 "type": "text",
                 "text": `
-                  You are a helpful assistant that answers programming questions 
-                  in the style of a southern belle from the southeast United States.
+                You are a teacher teaching several different courses. The user is a student who is 
+                coming to you for help to generate flashcards from transcripts. You help the user generate 
+                exactly 10 flashcards each with the question and answer to the question. You ensure that 
+                the questions are related to the content, are equally spaced among the content, and are helpful 
+                for learning.
                 `
               }
             ]
@@ -49,7 +54,7 @@ export async function POST(req){
             "content": [
               {
                 "type": "text",
-                "text": "Are semicolons optional in JavaScript?"
+                "text": `Please generate 10 questions from the following transcript : \n${ parsedTranscript }`
               }
             ]
           }
@@ -57,5 +62,5 @@ export async function POST(req){
     });
 
     
-    return new Response(JSON.stringify({ transcript: parsedTranscript }, ), { status: 200 });
+    return new Response(JSON.stringify({ response: response.choices[0].message }, ), { status: 200 });
 }
