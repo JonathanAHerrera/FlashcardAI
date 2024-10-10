@@ -24,13 +24,6 @@ export default function Home() {
   const [inputLink, setInputLink] = useState("");
   const [transcript, setTranscript] = useState(null); // State for transcript
 
-  useEffect(() => {
-    if (transcript !== null) {
-      console.log('Transcript updated:', transcript);
-    }
-  }, [transcript]);
-
-
   const fetchTranscript = async () => {
     try{
       const response = await fetch('/api/transcript', {
@@ -40,14 +33,41 @@ export default function Home() {
 
       const data = await response.json();
       if(response.ok){
-        setTranscript(data.transcript);
+        await setTranscript(data.transcript);
       } else {
         console.error("ERROR", data.error)
       }
     } catch (err) {
-      console.error('ITS OVER FOR YOU, YOU MESSED UP', err)
+      console.error('ITS OVER FOR YOU, YOU MESSED UP: ', err)
     }
   };
+
+  async function handleClick(){
+    await fetchTranscript();
+    setInputLink("");
+  }
+
+  useEffect(() => {
+    console.log(transcript)
+  }, [transcript])
+
+  // const fetchTranscript1 = () => {
+  //   return new Promise( async (resolve, reject) => {
+  //     const response = await fetch('/api/transcript', {
+  //       method: 'POST',
+  //       body: JSON.stringify({youtube_url: inputLink})
+  //     });
+      
+  //     const data = await response.json();
+      
+  //     if(response.ok){
+  //       setTranscript(data.transcript);
+  //       resolve(data.transcript);
+  //     } else {
+  //       reject(new Error("Failed to fetch transcript: ", data.error));
+  //     }
+  //   })
+  // }
 
   return (
     <ThemeProvider theme={theme}>
@@ -132,11 +152,7 @@ export default function Home() {
             />
             <Button
               variant="contained"
-              onClick={() => { 
-                fetchTranscript();
-                setInputLink("");
-                console.log(transcript)
-              }}
+              onClick={handleClick}
             >
               Submit
             </Button>

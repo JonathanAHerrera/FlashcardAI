@@ -34,7 +34,8 @@ export async function POST(req){
 
   try {
     const transcript = await getYouTubeTranscript(videoId);
-    return new Response(JSON.stringify({ transcript }), { status: 200 });
+    const text = transcript.slice(2,-3);
+    return new Response(JSON.stringify({ transcript:  text }, ), { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.toString() }), { status: 500 });
   }
